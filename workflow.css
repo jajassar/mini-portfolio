@@ -1,0 +1,185 @@
+/* ========================================================================
+   Animated workflow diagrams.
+   The workflow card is white (embedded "product UI" inside a dark marketing
+   page). All colors inside the card use --node-* tokens so they read on white,
+   regardless of page-level fg/bg tokens.
+   ======================================================================== */
+
+.wf {
+  position: relative;
+  padding: 32px;
+  background: white;
+  color: var(--node-fg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+/* Inner scrollable area for diagrams that exceed card width.
+   Vertical padding gives the active-state ping indicator and box-shadow
+   room to render without being clipped by overflow-x: auto. */
+.wf__canvas-wrap {
+  margin: 0 -32px;
+  padding: 12px 32px 16px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* Header strip on the workflow card */
+.wf__head {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 20px; margin-bottom: 12px;
+  border-bottom: 1px dashed var(--node-line);
+}
+.wf__title {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--node-fg-2); font-weight: 500;
+}
+.wf__controls { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.wf__btn {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  padding: 5px 10px; border-radius: 6px;
+  background: #F7F7F5; border: 1px solid var(--node-line); color: var(--node-fg);
+  cursor: pointer; transition: background var(--dur) var(--ease);
+}
+.wf__btn:hover { background: #ECEAE0; }
+.wf__btn--primary { background: var(--node-fg); color: white; border-color: var(--node-fg); }
+.wf__btn--primary:hover { background: var(--accent); color: var(--node-fg); border-color: var(--accent); }
+.wf__progress {
+  font-family: var(--mono); font-size: 11px; color: var(--node-fg-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Diagram canvas */
+.wf__canvas {
+  position: relative;
+  display: grid;
+  gap: 14px 28px;
+}
+
+/* Lane (a row of nodes) */
+.lane {
+  display: flex; align-items: center; gap: 14px;
+  flex-wrap: nowrap;
+}
+.lane--branch {
+  margin-left: 28px;
+  padding-left: 22px;
+  border-left: 1px dashed var(--node-line);
+}
+.lane__label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--node-fg-3); font-weight: 500;
+  min-width: 64px;
+}
+
+/* Node */
+.node {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 14px;
+  background: white;
+  border: 1px solid var(--node-line);
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--node-fg);
+  flex-shrink: 0;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              color var(--dur) var(--ease), transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease);
+}
+.node__kind {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 2px 6px; border-radius: 4px; font-weight: 500;
+  background: #F7F7F5; color: var(--node-fg-2); border: 1px solid var(--node-line);
+}
+
+/* Kind variants — visual cue for deterministic vs LLM vs human */
+.node--llm { background: var(--ink); border-color: var(--ink); color: white; }
+.node--llm .node__kind { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.16); }
+.node--det { background: var(--det); border-color: var(--node-line); }
+.node--human { background: var(--accent); border-color: var(--accent); color: var(--node-fg); }
+.node--human .node__kind { background: rgba(10,10,10,0.10); color: var(--node-fg); border-color: rgba(10,10,10,0.20); }
+.node--io { background: white; border-style: dashed; }
+
+/* Active state — node currently "executing" */
+.node.is-active {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 6px 16px rgba(226,254,86,0.25);
+  border-color: var(--accent);
+}
+.node.is-active::after {
+  content: ""; position: absolute; top: -4px; right: -4px;
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  animation: ping 1.2s var(--ease) infinite;
+  box-shadow: 0 0 0 1px var(--node-fg);
+}
+@keyframes ping {
+  0%   { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* Done state — completed nodes */
+.node.is-done { opacity: 0.95; }
+.node.is-done::before {
+  content: ""; position: absolute; left: -2px; top: -2px;
+  width: calc(100% + 4px); height: calc(100% + 4px);
+  border-radius: 10px; border: 1px solid var(--accent);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Idle (default - waiting) */
+.node.is-idle { opacity: 0.45; }
+
+/* Edge / connector arrow */
+.edge {
+  display: inline-flex; align-items: center;
+  color: var(--node-fg-3); flex-shrink: 0;
+  position: relative;
+  width: 28px; height: 1px;
+  background: var(--node-line);
+}
+.edge::after {
+  content: ""; position: absolute; right: -1px; top: -3px;
+  width: 0; height: 0; border-left: 6px solid var(--node-line);
+  border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+}
+
+/* Output bubble — terminal step on right side */
+.outcome {
+  display: inline-flex; flex-direction: column; gap: 4px;
+  padding: 10px 14px;
+  background: #F7F7F5;
+  border: 1px solid var(--node-line);
+  border-radius: 8px;
+  font-size: 13px;
+  min-width: 140px;
+}
+.outcome__label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--node-fg-3); font-weight: 500; }
+.outcome__value { font-weight: 500; color: var(--node-fg); }
+
+/* Legend */
+.wf__legend {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  margin-top: 12px; padding-top: 20px;
+  border-top: 1px dashed var(--node-line);
+  font-family: var(--mono); font-size: 11px; color: var(--node-fg-2);
+}
+.wf__legend-item { display: inline-flex; align-items: center; gap: 8px; }
+.wf__legend-chip {
+  width: 14px; height: 14px; border-radius: 3px;
+  border: 1px solid var(--node-line);
+}
+.wf__legend-chip--llm   { background: var(--ink);    border-color: var(--ink); }
+.wf__legend-chip--det   { background: var(--det); }
+.wf__legend-chip--human { background: var(--accent); border-color: var(--accent); }
+.wf__legend-chip--io    { background: white; border-style: dashed; }
+
+@media (max-width: 800px) {
+  .lane { flex-wrap: wrap; }
+  .edge { width: 18px; }
+  .lane__label { min-width: 0; width: 100%; padding-bottom: 4px; }
+  .lane--branch { margin-left: 12px; padding-left: 14px; }
+}

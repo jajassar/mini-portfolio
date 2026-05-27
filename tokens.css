@@ -1,0 +1,160 @@
+/* ========================================================================
+   Jessica Shah Portfolio — Ramp design system mode.
+   Marketing aesthetic: black canvas, lime accent, white embedded surfaces
+   for workflow diagrams. Mirrors the Ramp brand language.
+   ======================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  /* ---------- SURFACES (Ramp marketing palette) ---------- */
+  --bg:           #000000;        /* pure black canvas */
+  --paper:        #141414;        /* coal · nested section bg */
+  --ink:          #0F0F12;        /* darkest, used for product UI within */
+  --line:         rgba(255,255,255,0.10);
+  --line-strong:  rgba(255,255,255,0.18);
+
+  /* ---------- TEXT (on dark) ---------- */
+  --fg-1:         rgba(255,255,255,1);
+  --fg-2:         rgba(255,255,255,0.66);
+  --fg-3:         rgba(255,255,255,0.46);
+
+  /* ---------- ACCENT (Ramp lime) ---------- */
+  --accent:       #E2FE56;
+  --accent-soft:  rgba(226,254,86,0.18);
+  --accent-deep:  #B4D040;
+
+  /* ---------- WORKFLOW NODE TOKENS (rendered on white card) ---------- */
+  --det:          #ECEAE0;         /* light fill for deterministic nodes */
+  --human:        #E2FE56;         /* human checkpoint = lime */
+  --node-line:    #EAEAEA;         /* light border inside white wf card */
+  --node-fg:      #0A0A0A;         /* near-black text inside white wf card */
+  --node-fg-2:    #595959;
+  --node-fg-3:    #8C8C8C;
+
+  /* ---------- TYPE ---------- */
+  --sans:   "Geist", "Helvetica Neue", Arial, sans-serif;
+  --serif:  "Instrument Serif", Georgia, serif;
+  --mono:   "JetBrains Mono", ui-monospace, monospace;
+
+  /* ---------- MOTION ---------- */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur:  220ms;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg-1);
+  font-family: var(--sans);
+  font-size: 19px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.005em;
+}
+
+::selection { background: var(--accent); color: #0A0A0A; }
+
+a { color: inherit; text-decoration: none; }
+
+/* Layout */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+.wrap--narrow { max-width: 840px; }
+
+/* Type helpers */
+.t-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 14px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--fg-2); font-weight: 500;
+  white-space: nowrap;
+}
+.t-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.t-display {
+  font-family: var(--sans);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  font-size: clamp(48px, 7vw, 96px);
+  text-wrap: balance;
+  margin: 0;
+}
+.t-h2 {
+  font-family: var(--sans);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  font-size: clamp(36px, 4.4vw, 56px);
+  margin: 0;
+  text-wrap: balance;
+}
+.t-h3 {
+  font-family: var(--sans);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 0;
+}
+.t-lead { font-size: 19px; line-height: 1.55; color: var(--fg-2); font-weight: 400; }
+.t-mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0; }
+.t-serif { font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; }
+
+/* Section spacing */
+section { padding: 96px 0; border-top: 1px solid var(--line); }
+section:first-of-type { border-top: 0; }
+
+/* Buttons / links */
+.link-arrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 500; text-decoration: underline;
+  text-underline-offset: 4px; text-decoration-thickness: 1px;
+  transition: text-decoration-thickness var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.link-arrow:hover { text-decoration-thickness: 2px; color: var(--accent); }
+.link-arrow .arrow { font-family: var(--mono); }
+
+/* Tech chips — on dark canvas */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 11.5px;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--paper); border: 1px solid var(--line);
+  color: var(--fg-1); font-weight: 500;
+}
+
+/* Cards — coal on black */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+/* Reveal — CSS-only, plays on load (graceful) */
+.reveal {
+  animation: fadeUp 700ms var(--ease) both;
+}
+.reveal-stagger > * {
+  animation: fadeUp 600ms var(--ease) both;
+}
+.reveal-stagger > *:nth-child(1) { animation-delay:  50ms; }
+.reveal-stagger > *:nth-child(2) { animation-delay: 140ms; }
+.reveal-stagger > *:nth-child(3) { animation-delay: 230ms; }
+.reveal-stagger > *:nth-child(4) { animation-delay: 320ms; }
+.reveal-stagger > *:nth-child(5) { animation-delay: 410ms; }
+.reveal-stagger > *:nth-child(6) { animation-delay: 500ms; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
